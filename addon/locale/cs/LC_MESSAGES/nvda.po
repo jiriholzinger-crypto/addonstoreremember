@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: addonStoreSortMemory 1.1.0\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgid "Add-on Store Sort Memory"
+msgstr "Paměť řazení v Katalogu doplňků"
+
+msgid "&Manage sorting of the Add-on Store list"
+msgstr "&Spravovat řazení seznamu v Katalogu doplňků"
+
+msgid "Sorting m&ode:"
+msgstr "&Režim řazení:"
+
+msgid "Remember the last sort I chose"
+msgstr "Pamatovat si naposledy zvolené řazení"
+
+msgid "Always use the default sort below"
+msgstr "Vždy použít výchozí řazení níže"
+
+msgid "Remember sorting separately for each &tab"
+msgstr "Pamatovat si řazení zvlášť pro každou &kartu"
+
+msgid "NVDA default (do not change)"
+msgstr "Výchozí NVDA (neměnit)"
+
+msgid "Publication date, newest first"
+msgstr "Datum zveřejnění, nejnovější první"
+
+msgid "Publication date, oldest first"
+msgstr "Datum zveřejnění, nejstarší první"
+
+msgid "Install date, newest first"
+msgstr "Datum instalace, nejnovější první"
+
+msgid "Install date, oldest first"
+msgstr "Datum instalace, nejstarší první"
+
+msgid "Default sort for {tab}:"
+msgstr "Výchozí řazení pro {tab}:"
+
+msgid "&Forget remembered sorting"
+msgstr "&Zapomenout zapamatované řazení"
+
+msgid "Remembered sorting has been cleared. The default sort will be used next time."
+msgstr "Zapamatované řazení bylo vymazáno. Příště se použije výchozí řazení."
+
+msgid "Installed add-ons"
+msgstr "Nainstalované doplňky"
+
+msgid "Updatable add-ons"
+msgstr "Doplňky k aktualizaci"
+
+msgid "Available add-ons"
+msgstr "Dostupné doplňky"
+
+msgid "Incompatible add-ons"
+msgstr "Nekompatibilní doplňky"
+
+msgid "NVDA default (Installed add-ons, or Available if none are installed)"
+msgstr "Výchozí NVDA (Nainstalované doplňky, nebo Dostupné, pokud žádné nejsou nainstalovány)"
+
+msgid "Last used tab"
+msgstr "Naposledy použitá karta"
+
+msgid "Tab to &open when entering the Add-on Store:"
+msgstr "Karta, která se &otevře při vstupu do Katalogu doplňků:"
+
+msgid "Use this tab also when NVDA opens the store to show add-on &updates"
+msgstr "Použít tuto kartu i tehdy, když NVDA otevře katalog kvůli &aktualizacím doplňků"
