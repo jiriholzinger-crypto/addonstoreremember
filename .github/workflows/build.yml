@@ -18,12 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+
+      - name: Show repository files
+        run: |
+          echo "Files in the repository:"
+          find . -path ./.git -prune -o -type f -print | sort
+          for f in build.py readme.md readme.cs.md addon/manifest.ini addon/globalPlugins/addonStoreSortMemory/__init__.py; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing file $f. All files from the addonStoreSortMemory folder must be in the root of the repository (not inside a subfolder)."
+              missing=1
+            fi
+          done
+          [ -z "$missing" ]
 
       - name: Check Python syntax
         run: python -m compileall -q addon build.py
@@ -58,20 +70,20 @@ jobs:
           echo "SHA-256 of $file: $sum" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload build as workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.sha.outputs.file }}
           path: ${{ steps.sha.outputs.file }}
 
       - name: Create GitHub release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Add-on Store Sort Memory ${{ steps.version.outputs.version }}
-          files: ${{ steps.sha.outputs.file }}
-          generate_release_notes: true
-          body: |
-            NVDA add-on: Add-on Store Sort Memory, version ${{ steps.version.outputs.version }}.
-            Download the .nvda-addon file below and open it to install.
-
-            SHA-256: `${{ steps.sha.outputs.sha256 }}`
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          printf '%s\n\n%s\n\nSHA-256: `%s`\n' \
+            "NVDA add-on: Add-on Store Sort Memory, version ${{ steps.version.outputs.version }}." \
+            "Download the .nvda-addon file below and open it to install." \
+            "${{ steps.sha.outputs.sha256 }}" > notes.md
+          gh release create "$GITHUB_REF_NAME" "${{ steps.sha.outputs.file }}" \
+            --title "Add-on Store Sort Memory ${{ steps.version.outputs.version }}" \
+            --notes-file notes.md
