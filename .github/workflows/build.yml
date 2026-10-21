@@ -1,0 +1,77 @@
+# Builds the NVDA add-on on every push and pull request.
+# Pushing a tag like v1.1.0 also creates a GitHub release with the .nvda-addon file attached.
+
+name: Build add-on
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Check Python syntax
+        run: python -m compileall -q addon build.py
+
+      - name: Read version from manifest
+        id: version
+        run: |
+          version=$(sed -n 's/^version *= *//p' addon/manifest.ini | tr -d '\r')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Add-on version: $version"
+
+      - name: Check that the tag matches the manifest version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "v${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match manifest version ${{ steps.version.outputs.version }}. Change 'version' in addon/manifest.ini or use tag v${{ steps.version.outputs.version }}."
+            exit 1
+          fi
+
+      - name: Build the add-on
+        run: |
+          find addon -name __pycache__ -type d -prune -exec rm -rf {} +
+          python build.py
+
+      - name: Compute SHA-256 checksum
+        id: sha
+        run: |
+          file=addonStoreSortMemory-${{ steps.version.outputs.version }}.nvda-addon
+          sum=$(sha256sum "$file" | cut -d' ' -f1)
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          echo "sha256=$sum" >> "$GITHUB_OUTPUT"
+          echo "SHA-256 of $file: $sum" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload build as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.sha.outputs.file }}
+          path: ${{ steps.sha.outputs.file }}
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Add-on Store Sort Memory ${{ steps.version.outputs.version }}
+          files: ${{ steps.sha.outputs.file }}
+          generate_release_notes: true
+          body: |
+            NVDA add-on: Add-on Store Sort Memory, version ${{ steps.version.outputs.version }}.
+            Download the .nvda-addon file below and open it to install.
+
+            SHA-256: `${{ steps.sha.outputs.sha256 }}`
