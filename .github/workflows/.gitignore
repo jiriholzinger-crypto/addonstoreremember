@@ -1,0 +1,8 @@
+# Build output (made by build.py and by the GitHub workflow)
+*.nvda-addon
+*.mo
+addon/doc/*/readme.html
+
+# Python
+__pycache__/
+*.pyc
